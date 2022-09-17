@@ -1,5 +1,6 @@
 let gameRunning = false;
 let scoreInt = 0;
+let pageState = 0; // -1 Signup, 0 Login, 1 Game
 
 window.onload = () => {
   document.body.style.visibility = "hidden";
@@ -16,12 +17,24 @@ window.onload = () => {
       <h1>Login</h1>
       <input type="text" placeholder="Username">
       <input type="password" placeholder="Password">
-      <button>Signup instead</button>
+      <button id='state-switcher'>Signup instead</button>
       <button>Submit</button>
     </div>
   </div>
   `
   );
+
+  document.getElementById("state-switcher").addEventListener("click", () => {
+    if (pageState) {
+      pageState = 0;
+      document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Login";
+      document.getElementById("state-switcher").innerText = "Signup instead";
+    } else {
+      pageState = -1;
+      document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Signup";
+      document.getElementById("state-switcher").innerText = "Login instead";
+    }
+  });
 
   const game = document.getElementById("game");
   const boundaries = game.getElementsByClassName("boundary");
