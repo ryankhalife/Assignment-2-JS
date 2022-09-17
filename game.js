@@ -15,24 +15,44 @@ window.onload = () => {
   <div id='page-container' class="page-container" style="visibility: visible !important">
     <div id="form-container" class="form-container">
       <h1>Login</h1>
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
+      <p id='form-status'></p>
+      <input id='username' type="text" placeholder="Username">
+      <input id='password' type="password" placeholder="Password">
       <button id='state-switcher'>Signup instead</button>
-      <button>Submit</button>
+      <button id='submit'>Submit</button>
     </div>
   </div>
   `
   );
 
-  document.getElementById("state-switcher").addEventListener("click", () => {
+  document.getElementById("state-switcher").addEventListener("click", () => togglePageState());
+
+  document.getElementById("submit").addEventListener("click", () => {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    if (username == "" || password == "") {
+      document.getElementById("form-status").style.color = "red";
+      document.getElementById("form-status").innerText = "You can't submit empty values";
+      return;
+    }
     if (pageState) {
-      pageState = 0;
-      document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Login";
-      document.getElementById("state-switcher").innerText = "Signup instead";
+      if (localStorage.getItem(username)) {
+        document.getElementById("form-status").style.color = "red";
+        document.getElementById("form-status").innerText = "Username already exists";
+      } else {
+        localStorage.setItem(username, password);
+        togglePageState();
+        document.getElementById("form-status").style.color = "green";
+        document.getElementById("form-status").innerText = "Account created, please login";
+      }
     } else {
-      pageState = -1;
-      document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Signup";
-      document.getElementById("state-switcher").innerText = "Login instead";
+      if (localStorage.getItem(username) == password) {
+        document.getElementById("page-container").remove();
+        document.body.style.visibility = "visible";
+      } else {
+        document.getElementById("form-status").style.color = "red";
+        document.getElementById("form-status").innerText = "Username or password is incorrect";
+      }
     }
   });
 
@@ -90,6 +110,27 @@ window.onload = () => {
       if (gameRunning) gameOver();
     });
   }
+
+  const togglePageState = () => {
+    resetInputs();
+    document.getElementById("form-status").innerText = null;
+    if (pageState) {
+      pageState = 0;
+      document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Login";
+      document.getElementById("state-switcher").innerText = "Signup instead";
+    } else {
+      pageState = -1;
+      document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Signup";
+      document.getElementById("state-switcher").innerText = "Login instead";
+    }
+  };
+};
+
+const resetInputs = () => {
+  const inputs = document.getElementById("form-container").getElementsByTagName("input");
+  for (input of inputs) {
+    input.value = null;
+  }
 };
 
 const css = `
@@ -138,6 +179,15 @@ const css = `
 .form-container button + button:hover{
   background-color: rgba(128,128,128,0.4);
   cursor: pointer;
+}
+
+.form-container p{
+  width: auto;
+  margin: 7px 0 13px;
+}
+
+.form-container h1{
+  margin-bottom: 0;
 }
 
 `;
