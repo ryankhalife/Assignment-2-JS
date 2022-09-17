@@ -6,9 +6,22 @@ window.onload = () => {
   const start = document.getElementById("start");
   const end = document.getElementById("end");
 
-  start.addEventListener("mouseenter", () => {
+  const gameOver = () => {
+    gameRunning = false;
+    for (boundary of boundaries) {
+      boundary.classList.add("youlose");
+    }
+    console.log("You lose");
+  };
+
+  const startGame = () => {
     gameRunning = true;
-  });
+    for (boundary of boundaries) {
+      boundary.classList.remove("youlose");
+    }
+  };
+
+  start.addEventListener("mouseenter", () => startGame());
 
   end.addEventListener("mouseenter", () => {
     if (gameRunning) {
@@ -19,17 +32,11 @@ window.onload = () => {
 
   for (boundary of boundaries) {
     boundary.addEventListener("mouseenter", () => {
-      if (gameRunning) {
-        gameRunning = false;
-        console.log("You lost");
-      }
+      if (gameRunning) gameOver();
     });
 
     game.addEventListener("mouseleave", () => {
-      if (gameRunning) {
-        gameRunning = false;
-        console.log("You lost");
-      }
+      if (gameRunning) gameOver();
     });
   }
 };
