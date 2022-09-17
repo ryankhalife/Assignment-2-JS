@@ -30,12 +30,18 @@ window.onload = () => {
     for (boundary of boundaries) {
       boundary.classList.add("youlose");
     }
-    scoreInt -= 10;
+    scoreInt = Math.max(0, scoreInt - 10);
     status.innerHTML = "You lose";
     score.innerHTML = `Score: ${scoreInt}`;
   };
 
   start.addEventListener("mouseenter", () => startGame());
+
+  start.addEventListener("mousedown", () => {
+    scoreInt = 0;
+    score.innerHTML = `Score: ${scoreInt}`;
+    status.innerHTML = 'Begin by moving your mouse over the "S".';
+  });
 
   end.addEventListener("mouseenter", () => {
     if (gameRunning) victory();
