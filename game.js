@@ -1,5 +1,5 @@
 let gameRunning = false;
-let pageState = 0; // -1 Signup, 0 Login, 1 Game
+let pageState = 0; // 0 Login, 1 Signup
 let player = null;
 let playerData = null;
 
@@ -126,7 +126,7 @@ window.onload = () => {
       document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Login";
       document.getElementById("state-switcher").innerText = "Signup instead";
     } else {
-      pageState = -1;
+      pageState = 1;
       document.getElementById("form-container").getElementsByTagName("h1")[0].innerText = "Signup";
       document.getElementById("state-switcher").innerText = "Login instead";
     }
