@@ -48,7 +48,7 @@ window.onload = () => {
       }
     } else {
       playerData = JSON.parse(localStorage.getItem(username));
-      if (playerData.password == password) {
+      if (playerData?.password == password) {
         player = username;
         document.getElementById("score").innerText = `Score: ${playerData.score}`;
         document.getElementById("page-container").remove();
