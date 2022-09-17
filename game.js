@@ -1,6 +1,7 @@
 let gameRunning = false;
-let scoreInt = 0;
 let pageState = 0; // -1 Signup, 0 Login, 1 Game
+let player = null;
+let playerData = null;
 
 window.onload = () => {
   document.body.style.visibility = "hidden";
@@ -40,13 +41,16 @@ window.onload = () => {
         document.getElementById("form-status").style.color = "red";
         document.getElementById("form-status").innerText = "Username already exists";
       } else {
-        localStorage.setItem(username, password);
+        localStorage.setItem(username, JSON.stringify({ password: password, score: 0 }));
         togglePageState();
         document.getElementById("form-status").style.color = "green";
         document.getElementById("form-status").innerText = "Account created, please login";
       }
     } else {
-      if (localStorage.getItem(username) == password) {
+      playerData = JSON.parse(localStorage.getItem(username));
+      if (playerData.password == password) {
+        player = username;
+        document.getElementById("score").innerText = `Score: ${playerData.score}`;
         document.getElementById("page-container").remove();
         document.body.style.visibility = "visible";
       } else {
@@ -61,7 +65,7 @@ window.onload = () => {
   const start = document.getElementById("start");
   const end = document.getElementById("end");
   const status = document.getElementById("status");
-  status.insertAdjacentHTML("afterend", `<h2 id="score">Score: ${scoreInt}</h2>`);
+  status.insertAdjacentHTML("afterend", `<h2 id="score">Score: 0</h2>`);
   const score = document.getElementById("score");
 
   const startGame = () => {
@@ -74,9 +78,10 @@ window.onload = () => {
 
   const victory = () => {
     gameRunning = false;
-    scoreInt += 5;
+    playerData.score += 5;
+    localStorage.setItem(player, JSON.stringify(playerData));
     status.innerHTML = "You win";
-    score.innerHTML = `Score: ${scoreInt}`;
+    score.innerHTML = `Score: ${playerData.score}`;
   };
 
   const gameOver = () => {
@@ -84,16 +89,18 @@ window.onload = () => {
     for (boundary of boundaries) {
       boundary.classList.add("youlose");
     }
-    scoreInt = Math.max(0, scoreInt - 10);
+    playerData.score = Math.max(0, playerData.score - 10);
+    localStorage.setItem(player, JSON.stringify(playerData));
     status.innerHTML = "You lose";
-    score.innerHTML = `Score: ${scoreInt}`;
+    score.innerHTML = `Score: ${playerData.score}`;
   };
 
   start.addEventListener("mouseenter", () => startGame());
 
   start.addEventListener("mousedown", () => {
-    scoreInt = 0;
-    score.innerHTML = `Score: ${scoreInt}`;
+    playerData.score = 0;
+    localStorage.setItem(player, JSON.stringify(playerData));
+    score.innerHTML = `Score: ${playerData.score}`;
     status.innerHTML = 'Begin by moving your mouse over the "S".';
   });
 
@@ -150,8 +157,8 @@ const css = `
   height: 25px;
 }
 
-.form-container h1 + input{
-  margin-bottom: 10px;
+.form-container p + input{
+  margin-bottom: 5px;
 }
 
 .form-container input + input{
