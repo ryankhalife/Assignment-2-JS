@@ -24,5 +24,12 @@ window.onload = () => {
         console.log("You lost");
       }
     });
+
+    game.addEventListener("mouseleave", () => {
+      if (gameRunning) {
+        gameRunning = false;
+        console.log("You lost");
+      }
+    });
   }
 };
