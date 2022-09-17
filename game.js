@@ -1,33 +1,44 @@
 let gameRunning = false;
+let scoreInt = 0;
 
 window.onload = () => {
   const game = document.getElementById("game");
   const boundaries = game.getElementsByClassName("boundary");
   const start = document.getElementById("start");
   const end = document.getElementById("end");
-
-  const gameOver = () => {
-    gameRunning = false;
-    for (boundary of boundaries) {
-      boundary.classList.add("youlose");
-    }
-    console.log("You lose");
-  };
+  const status = document.getElementById("status");
+  status.insertAdjacentHTML("afterend", `<h2 id="score">Score: ${scoreInt}</h2>`);
+  const score = document.getElementById("score");
 
   const startGame = () => {
+    if (gameRunning) return;
     gameRunning = true;
     for (boundary of boundaries) {
       boundary.classList.remove("youlose");
     }
   };
 
+  const victory = () => {
+    gameRunning = false;
+    scoreInt += 5;
+    status.innerHTML = "You win";
+    score.innerHTML = `Score: ${scoreInt}`;
+  };
+
+  const gameOver = () => {
+    gameRunning = false;
+    for (boundary of boundaries) {
+      boundary.classList.add("youlose");
+    }
+    scoreInt -= 10;
+    status.innerHTML = "You lose";
+    score.innerHTML = `Score: ${scoreInt}`;
+  };
+
   start.addEventListener("mouseenter", () => startGame());
 
   end.addEventListener("mouseenter", () => {
-    if (gameRunning) {
-      gameRunning = false;
-      console.log("You won");
-    }
+    if (gameRunning) victory();
   });
 
   for (boundary of boundaries) {
